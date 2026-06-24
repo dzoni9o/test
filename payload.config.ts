@@ -2,6 +2,7 @@ import { buildConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { fileURLToPath } from 'url'
 import path from 'path'
 
@@ -17,6 +18,7 @@ const dirname = path.dirname(filename)
 
 const isProd = process.env.NODE_ENV === 'production'
 const dbUri = process.env.DATABASE_URI
+const blobToken = process.env.BLOB_READ_WRITE_TOKEN
 
 const db = isProd
   ? postgresAdapter({ pool: { connectionString: dbUri! } })
@@ -36,6 +38,15 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db,
+  plugins: [
+    vercelBlobStorage({
+      enabled: Boolean(blobToken),
+      token: blobToken || '',
+      collections: {
+        media: true,
+      },
+    }),
+  ],
   upload: {
     limits: {
       fileSize: 10000000,
