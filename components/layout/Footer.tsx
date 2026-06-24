@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPin, Phone, Mail, Clock, Zap, Facebook, Instagram, Linkedin } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Zap } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -23,15 +23,15 @@ export default function Footer() {
               stručna podrška od 2008. godine.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="w-9 h-9 bg-white/10 hover:bg-yellow-500 hover:text-[#1B3A6B] text-gray-400 rounded-lg flex items-center justify-center transition-all">
-                <Facebook size={16} />
-              </a>
-              <a href="#" className="w-9 h-9 bg-white/10 hover:bg-yellow-500 hover:text-[#1B3A6B] text-gray-400 rounded-lg flex items-center justify-center transition-all">
-                <Instagram size={16} />
-              </a>
-              <a href="#" className="w-9 h-9 bg-white/10 hover:bg-yellow-500 hover:text-[#1B3A6B] text-gray-400 rounded-lg flex items-center justify-center transition-all">
-                <Linkedin size={16} />
-              </a>
+              {[
+                { label: 'f', title: 'Facebook' },
+                { label: 'in', title: 'Instagram' },
+                { label: 'li', title: 'LinkedIn' },
+              ].map(({ label, title }) => (
+                <a key={title} href="#" title={title} className="w-9 h-9 bg-white/10 hover:bg-yellow-500 hover:text-[#1B3A6B] text-gray-400 rounded-lg flex items-center justify-center transition-all text-xs font-bold">
+                  {label}
+                </a>
+              ))}
             </div>
           </div>
 

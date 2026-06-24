@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '**' },
     ],
   },
-  experimental: {
-    reactCompiler: false,
-  },
 }
 
 export default withPayload(nextConfig)
