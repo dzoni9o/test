@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { ShoppingCart, Search, User, Menu, X, Phone, ChevronDown, Zap } from 'lucide-react'
+import { ShoppingCart, User, Menu, X, Phone, ChevronDown, Zap, Heart, Search } from 'lucide-react'
 import { useCartStore } from '@/lib/store'
+import { useWishlistStore } from '@/lib/wishlist'
 import { cn } from '@/lib/utils'
+import SearchBar from '@/components/shop/SearchBar'
 
 const NAV_CATEGORIES = [
   {
@@ -41,10 +43,9 @@ const NAV_CATEGORIES = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const { totalItems, toggleCart } = useCartStore()
+  const { items: wishlistItems } = useWishlistStore()
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -80,28 +81,29 @@ export default function Header() {
           </Link>
 
           {/* Search bar */}
-          <div className="flex-1 hidden md:block max-w-2xl">
-            <div className="relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Pretraži proizvode, šifre artikala, brendove..."
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]/20 focus:border-[#1B3A6B] transition-all"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+          <div className="hidden md:flex flex-1">
+            <SearchBar />
           </div>
 
           {/* Right actions */}
           <div className="flex items-center gap-1 ml-auto md:ml-0">
-            {/* Mobile search */}
-            <button
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
-              onClick={() => setSearchOpen(!searchOpen)}
+            {/* Mobile search icon (search bar is always shown below on mobile) */}
+            <span className="md:hidden p-2">
+              <Search size={20} className="text-gray-400" />
+            </span>
+
+            {/* Wishlist */}
+            <Link
+              href="/wishlist"
+              className="relative hidden md:flex items-center gap-1.5 px-3 py-2 hover:bg-gray-100 rounded-lg text-sm text-gray-700 transition-colors"
             >
-              <Search size={20} className="text-gray-600" />
-            </button>
+              <Heart size={18} />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
 
             {/* Account */}
             <Link
@@ -137,19 +139,9 @@ export default function Header() {
         </div>
 
         {/* Mobile search */}
-        {searchOpen && (
-          <div className="md:hidden px-4 pb-3">
-            <div className="relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Pretraži proizvode..."
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]/20"
-                autoFocus
-              />
-            </div>
-          </div>
-        )}
+        <div className="md:hidden px-4 pb-3">
+          <SearchBar />
+        </div>
       </div>
 
       {/* Nav bar */}

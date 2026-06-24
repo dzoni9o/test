@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import {
-  Zap, Shield, Truck, HeadphonesIcon, ArrowRight, Star,
-  Package, ChevronRight, Building2
+  Zap, Shield, Truck, HeadphonesIcon, ArrowRight,
+  ChevronRight, Building2
 } from 'lucide-react'
+import ProductCard, { type ProductCardData } from '@/components/shop/ProductCard'
 
 const CATEGORIES = [
   { name: 'Kablovi', href: '/kategorije/kablovi', icon: '🔌', color: 'bg-blue-50 hover:bg-blue-100', count: '1.200+' },
@@ -47,24 +48,16 @@ const WHY_US = [
   },
 ]
 
-const FEATURED_PRODUCTS = [
-  { id: '1', name: 'Kabel PP-Y 3x1.5mm²', price: 180, priceVat: 216, sku: 'KAB-001', rating: 4.8, reviews: 24, badge: 'Bestseller' },
-  { id: '2', name: 'LED panel 60x60 40W neutralna', price: 2800, priceVat: 3360, sku: 'LED-045', rating: 4.9, reviews: 41, badge: 'NOVO' },
-  { id: '3', name: 'Schneider Acti9 iC60N 16A', price: 1650, priceVat: 1980, sku: 'SCH-112', rating: 5.0, reviews: 18, badge: null },
-  { id: '4', name: 'Razvodna tabla UP 12 modula', price: 890, priceVat: 1068, sku: 'RAZ-023', rating: 4.7, reviews: 33, badge: 'Akcija' },
-  { id: '5', name: 'Utičnica Legrand Mosaic 2P+E', price: 320, priceVat: 384, sku: 'LEG-078', rating: 4.8, reviews: 56, badge: null },
-  { id: '6', name: 'Koaksijalni kabl RG6 75 Ohm', price: 95, priceVat: 114, sku: 'KOA-034', rating: 4.6, reviews: 29, badge: null },
-  { id: '7', name: 'Kontaktor Schneider LC1D25 25A', price: 3200, priceVat: 3840, sku: 'SCH-234', rating: 5.0, reviews: 12, badge: null },
-  { id: '8', name: 'LED traka 24V 14.4W/m IP65', price: 650, priceVat: 780, sku: 'LED-120', rating: 4.9, reviews: 37, badge: 'NOVO' },
+const FEATURED_PRODUCTS: ProductCardData[] = [
+  { id: '1', name: 'Kabel PP-Y 3x1.5mm²', slug: 'kab-001', price: 180, priceWithVat: 216, sku: 'KAB-001', rating: 4.8, reviewCount: 24, inStock: true, stock: 150, unit: 'met', brand: 'Generic', badge: 'Bestseller' },
+  { id: '2', name: 'LED panel 60x60 40W neutralna', slug: 'led-045', price: 2800, priceWithVat: 3360, sku: 'LED-045', rating: 4.9, reviewCount: 41, inStock: true, stock: 30, unit: 'kom', brand: 'Philips', isNew: true },
+  { id: '3', name: 'Schneider Acti9 iC60N 16A', slug: 'sch-112', price: 1650, priceWithVat: 1980, sku: 'SCH-112', rating: 5.0, reviewCount: 18, inStock: true, stock: 47, unit: 'kom', brand: 'Schneider' },
+  { id: '4', name: 'Razvodna tabla UP 12 modula', slug: 'raz-023', price: 890, priceWithVat: 1068, sku: 'RAZ-023', rating: 4.7, reviewCount: 33, inStock: true, stock: 60, unit: 'kom', onSale: true, comparePrice: 1200 },
+  { id: '5', name: 'Utičnica Legrand Mosaic 2P+E', slug: 'leg-078', price: 320, priceWithVat: 384, sku: 'LEG-078', rating: 4.8, reviewCount: 56, inStock: true, stock: 200, unit: 'kom', brand: 'Legrand' },
+  { id: '6', name: 'Koaksijalni kabl RG6 75 Ohm', slug: 'koa-034', price: 95, priceWithVat: 114, sku: 'KOA-034', rating: 4.6, reviewCount: 29, inStock: true, stock: 500, unit: 'met', brand: 'Generic' },
+  { id: '7', name: 'Kontaktor Schneider LC1D25 25A', slug: 'sch-234', price: 3200, priceWithVat: 3840, sku: 'SCH-234', rating: 5.0, reviewCount: 12, inStock: true, stock: 15, unit: 'kom', brand: 'Schneider' },
+  { id: '8', name: 'LED traka 24V 14.4W/m IP65', slug: 'led-120', price: 650, priceWithVat: 780, sku: 'LED-120', rating: 4.9, reviewCount: 37, inStock: true, stock: 80, unit: 'met', brand: 'Philips', isNew: true },
 ]
-
-function formatRSD(price: number): string {
-  return new Intl.NumberFormat('sr-RS', {
-    style: 'currency',
-    currency: 'RSD',
-    minimumFractionDigits: 0,
-  }).format(price)
-}
 
 export default function HomePage() {
   return (
@@ -162,44 +155,7 @@ export default function HomePage() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {FEATURED_PRODUCTS.map((product) => (
-            <Link
-              key={product.id}
-              href={`/proizvodi/${product.sku.toLowerCase()}`}
-              className="bg-white rounded-2xl border border-gray-100 hover:border-[#1B3A6B]/20 hover:shadow-lg transition-all group overflow-hidden"
-            >
-              <div className="relative bg-gray-50 aspect-square flex items-center justify-center">
-                <Package size={48} className="text-gray-200" />
-                {product.badge && (
-                  <span className={`absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded-lg ${
-                    product.badge === 'Bestseller' ? 'bg-orange-500 text-white' :
-                    product.badge === 'NOVO' ? 'bg-green-500 text-white' :
-                    product.badge === 'Akcija' ? 'bg-red-500 text-white' : 'bg-gray-700 text-white'
-                  }`}>
-                    {product.badge}
-                  </span>
-                )}
-              </div>
-              <div className="p-3">
-                <p className="text-xs text-gray-400 mb-1">SKU: {product.sku}</p>
-                <h3 className="text-sm font-semibold text-gray-800 leading-tight line-clamp-2 group-hover:text-[#1B3A6B] transition-colors mb-2">
-                  {product.name}
-                </h3>
-                <div className="flex items-center gap-1 mb-2">
-                  <Star size={11} className="fill-yellow-400 text-yellow-400" />
-                  <span className="text-xs font-medium text-gray-700">{product.rating}</span>
-                  <span className="text-xs text-gray-400">({product.reviews})</span>
-                </div>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <p className="text-base font-black text-[#1B3A6B]">{formatRSD(product.priceVat)}</p>
-                    <p className="text-xs text-gray-400">{formatRSD(product.price)} bez PDV</p>
-                  </div>
-                  <button className="w-8 h-8 bg-yellow-500 hover:bg-yellow-400 rounded-lg flex items-center justify-center text-[#1B3A6B] font-bold transition-colors text-lg">
-                    +
-                  </button>
-                </div>
-              </div>
-            </Link>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>

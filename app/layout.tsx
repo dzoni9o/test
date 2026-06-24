@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import CartDrawer from '@/components/shop/CartDrawer'
+import ToastContainer from '@/components/ui/Toast'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.className} antialiased`}>
         <Header />
         <CartDrawer />
+        <ToastContainer />
         <main className="min-h-screen bg-gray-50">{children}</main>
         <Footer />
       </body>
