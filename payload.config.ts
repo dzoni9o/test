@@ -12,6 +12,7 @@ import { Orders } from './collections/Orders'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Brands } from './collections/Brands'
+import { Settings } from './globals/Settings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -32,6 +33,7 @@ export default buildConfig({
     },
   },
   collections: [Products, Categories, Brands, Orders, Users, Media],
+  globals: [Settings],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'elektro-in-secret-key-2024',
   typescript: {
