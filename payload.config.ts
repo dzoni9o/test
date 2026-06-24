@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { fileURLToPath } from 'url'
 import path from 'path'
 
@@ -13,6 +14,13 @@ import { Brands } from './collections/Brands'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const isProd = process.env.NODE_ENV === 'production'
+const dbUri = process.env.DATABASE_URI
+
+const db = isProd
+  ? postgresAdapter({ pool: { connectionString: dbUri! } })
+  : sqliteAdapter({ client: { url: dbUri || 'file:./elektroin.db' } })
 
 export default buildConfig({
   admin: {
@@ -27,11 +35,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URI || 'file:./elektroin.db',
-    },
-  }),
+  db,
   upload: {
     limits: {
       fileSize: 10000000,
